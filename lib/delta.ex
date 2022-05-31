@@ -134,6 +134,8 @@ defmodule Delta do
     end
   end
 
+  @boring [false, "", nil, [], 0, 0.0]
+
   @doc """
   Identifies boring values
 
@@ -173,32 +175,9 @@ defmodule Delta do
     false
   """
   @spec boring?(any()) :: boolean()
-  def boring?(false), do: true
-  def boring?(""), do: true
-  def boring?(nil), do: true
-  def boring?([]), do: true
-  def boring?(0), do: true
-  def boring?(0.0), do: true
+  def boring?(value) when value in @boring, do: true
   def boring?(list = [_ | _]), do: Enum.all?(list, &boring?/1)
-
-  def boring?(struct = %_{}) do
-    struct |> Map.from_struct() |> boring?()
-  end
-
-  def boring?(map = %{}) do
-    map |> Map.to_list() |> Enum.all?(fn {_, v} -> boring?(v) end)
-  end
-
+  def boring?(struct = %_{}), do: struct |> Map.from_struct() |> boring?()
+  def boring?(map = %{}), do: map |> Map.values() |> boring?()
   def boring?(_), do: false
-
-  @doc """
-  Identifies boring values
-
-  ## Examples
-
-    iex> Delta.interesting?("I'm interesting!")
-    true
-  """
-  @spec interesting?(any()) :: boolean()
-  def interesting?(x), do: !boring?(x)
 end
