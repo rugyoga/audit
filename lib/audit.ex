@@ -37,7 +37,7 @@ defmodule Audit do
   def nth(r, n), do: nth(r |> trail |> record, n - 1)
 
   defp stringify_change({post, {pre, filename, line}}) do
-    diff  = Livebook.delta(pre |> unaudit_fun, post |> unaudit_fun)
+    diff  = Delta.delta(pre |> unaudit_fun, post |> unaudit_fun)
     file  = FileCache.get(filename)
     start = file |> Enum.drop(line-6)
     code  = start |> Enum.drop(5) |> List.first()
