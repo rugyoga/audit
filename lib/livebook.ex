@@ -30,10 +30,10 @@ defmodule Livebook do
     iex> Livebook.boring?(%{a: false, b: "", c: nil, d: [], e: 0, f: 0.0})
     true
 
-    iex> Livebook.boring?(%{address_input: ""})
+    iex> Livebook.boring?(%{foo: ""})
     true
 
-    iex> Livebook.boring?(%{address_input: "185 Berry St"})
+    iex> Livebook.boring?(%{foo: "185 Berry St"})
     false
 
     iex> Livebook.boring?("boring")
@@ -76,32 +76,16 @@ defmodule Livebook do
     ["interesting", "sweet", [:nested, :nonsense]]
 
     iex> Livebook.summarize(%{
-    ...>       address_input: "185 Berry St",
-    ...>       id: "",
-    ...>       recipient_input: "",
-    ...>       primary_line_input: "",
-    ...>       secondary_line_input: "",
-    ...>       city_input: "",
-    ...>       state_input: "",
-    ...>       zip_code_input: "",
-    ...>       last_line_input: "",
-    ...>       urbanization_input: "",
-    ...>       candidate_addresses: []
+    ...>       foo: "A value",
+    ...>       bar: "",
+    ...>       baz: ""
     ...>     })
-    %{address_input: "185 Berry St"}
+    %{foo: "A value"}
 
     iex> Livebook.summarize(%{
-    ...>       address_input: "",
-    ...>       id: "",
-    ...>       recipient_input: "",
-    ...>       primary_line_input: "",
-    ...>       secondary_line_input: "",
-    ...>       city_input: "",
-    ...>       state_input: "",
-    ...>       zip_code_input: "",
-    ...>       last_line_input: "",
-    ...>       urbanization_input: "",
-    ...>       candidate_addresses: []
+    ...>       foo: "",
+    ...>       bar: "",
+    ...>       baz: ""
     ...>     })
     nil
 
