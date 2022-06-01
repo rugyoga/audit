@@ -27,6 +27,7 @@ defmodule Audit.MixProject do
   defp deps do
     [
       {:mock, "~> 0.3.7", only: [:ci, :test]},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
     ]
   end
 
