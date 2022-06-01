@@ -32,17 +32,23 @@ defmodule Audit.MixProject do
 
   defp description do
     """
-    The aAudit library allows you to easily track changes to key data structutes in your code
+    The Audit library allows you to easily track changes to key data structutes in your code
     by decorating their updates with audit(x) like so:
       %Data{ original | foo: "bar"}
     becomes
       %Data{ audit(original) | foo: "bar"}
+
     This updates a hidden field, __audit_trail__ (that you need to add to your struct) with a triple
-    of {filename, line, value}
+    of {filename, line, value}. By applying Audit.to_string, you can see every change made to the
+    data structure as well as where in the code it was changed.
     """
   end
 
   defp package do
-
+    [
+      files: ~w(lib priv .formatter.exs mix.exs README* readme* LICENSE* license* CHANGELOG* changelog* src),
+      licenses: ["Apache-2.0"],
+      links: %{"GitHub" => "https://github.com/rugyoga/audit"}
+    ]
   end
 end
