@@ -1,4 +1,4 @@
-defmodule FileCache do
+defmodule Audit.FileCache do
   @moduledoc """
   Simple File cache Agent
   """

@@ -3,11 +3,15 @@ defmodule Audit do
     An implementation of Guy's value chain methodology for debugging complex functional programs
   """
   @key :__audit_trail__
-  @audit? Application.compile_env(:dora, :audit, false)
+  @audit? Application.compile_env(:audit, :active, false)
 
   @type file_t :: binary()
   @type line_t :: non_neg_integer()
   @type trail_t(t) :: {t, file_t(), line_t()}
+
+  def start(_type, _args) do
+    Supervisor.start_link([Audit.FileCache], strategy: :one_for_one)
+  end
 
   @spec audit_fun(struct(), Macro.Env) :: struct()
   def audit_fun(r, e) do
@@ -37,11 +41,11 @@ defmodule Audit do
   def nth(r, n), do: nth(r |> trail |> record, n - 1)
 
   defp stringify_change({post, {pre, filename, line}}) do
-    diff  = Delta.delta(pre |> unaudit_fun, post |> unaudit_fun)
-    file  = FileCache.get(filename)
-    start = file |> Enum.drop(line-6)
-    code  = start |> Enum.drop(5) |> List.first()
-    (["#{filename}:#{line}\n", code, "diff: #{inspect(diff)}"]) |> Enum.join()
+    diff = Audit.Delta.delta(pre |> unaudit_fun, post |> unaudit_fun)
+    file = Audit.FileCache.get(filename)
+    start = file |> Enum.drop(line - 6)
+    code = start |> Enum.drop(5) |> List.first()
+    ["#{filename}:#{line}\n", code, "diff: #{inspect(diff)}"] |> Enum.join()
   end
 
   defp changelist(r) do

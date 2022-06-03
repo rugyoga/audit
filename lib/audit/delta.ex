@@ -1,4 +1,4 @@
-defmodule Delta do
+defmodule Audit.Delta do
   @moduledoc "Simple difference engine"
 
   @type delta() :: {:update, any(), any()} | {:delete, any()} | {:add, any()}
@@ -113,6 +113,7 @@ defmodule Delta do
 
   @spec delta_list(path(), list(), list()) :: delta_spec()
   defp delta_list(path, as, bs) when length(as) != length(bs), do: delta_simple(path, as, bs)
+
   defp delta_list(path, as, bs) do
     0..(length(as) - 1)
     |> Enum.to_list()
@@ -126,6 +127,7 @@ defmodule Delta do
 
   @spec delta_simple(path(), term(), term()) :: delta_spec()
   defp delta_simple(_path, a, b) when a == b, do: []
+
   defp delta_simple(path, a, b) do
     cond do
       boring?(a) -> [{path, {:add, b}}]
@@ -165,6 +167,9 @@ defmodule Delta do
     iex> Delta.boring?(%{a: false, b: "", c: nil, d: [], e: 0, f: 0.0})
     true
 
+    iex> Delta.boring?({false, "", nil, [], 0, 0.0})
+    true
+
     iex> Delta.boring?(%{foo: ""})
     true
 
@@ -176,8 +181,9 @@ defmodule Delta do
   """
   @spec boring?(any()) :: boolean()
   def boring?(value) when value in @boring, do: true
-  def boring?(list = [_ | _]), do: Enum.all?(list, &boring?/1)
-  def boring?(struct = %_{}), do: struct |> Map.from_struct() |> boring?()
-  def boring?(map = %{}), do: map |> Map.values() |> boring?()
+  def boring?(value) when is_list(value), do: Enum.all?(value, &boring?/1)
+  def boring?(value) when is_tuple(value), do: value |> Tuple.to_list() |> boring?()
+  def boring?(value) when is_struct(value), do: value |> Map.from_struct() |> boring?()
+  def boring?(value) when is_map(value), do: value |> Map.values() |> boring?()
   def boring?(_), do: false
 end

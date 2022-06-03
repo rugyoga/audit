@@ -1,7 +1,7 @@
 defmodule FileCacheTest do
   use ExUnit.Case, async: true
   import Mock
-  alias FileCache
+  alias Audit.FileCache
 
   @file_contents ["word"]
 

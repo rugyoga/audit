@@ -4,7 +4,8 @@ defmodule Audit.MixProject do
   def project do
     [
       app: :audit,
-      version: "0.1.0",
+      aliases: [checks: ["credo", "format", "dialyzer", "hex.outdated"]],
+      version: "0.1.1",
       elixir: "~> 1.13",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -19,15 +20,18 @@ defmodule Audit.MixProject do
   # Run "mix help compile.app" to learn about applications.
   def application do
     [
-      extra_applications: [:logger]
+      extra_applications: [:logger],
+      mod: {Audit, []}
     ]
   end
 
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:mock, "~> 0.3.7", only: [:ci, :test]},
-      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false}
+      {:credo, "~> 1.6", only: [:ci, :dev, :test], runtime: false},
+      {:dialyxir, "~> 1.1", only: [:ci, :dev, :test], runtime: false},
+      {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:mock, "~> 0.3.7", only: [:ci, :test]}
     ]
   end
 
