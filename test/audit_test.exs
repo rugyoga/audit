@@ -2,16 +2,21 @@ defmodule AuditTest do
   use Audit
   use ExUnit.Case, async: true
 
+  defmodule TestStruct do
+    defstruct foo: "default", __audit_trail__: nil
+  end
+
   describe "audit" do
     test "trail" do
-      r = %{}
-      assert r |> audit_real |> trail == {r, __ENV__.file, 8}
+      r = %TestStruct{}
+      assert r |> audit_real |> trail == {r, __ENV__.file, __ENV__.line}
     end
 
     test "nth" do
-      a = %{}
-      b = a |> audit_real |> Map.put(:foo, "bar")
-      c = b |> audit_real |> Map.put(:foo, "baz")
+
+      a = %TestStruct{}
+      b = a |> audit_real |> struct(foo: "bar")
+      c = b |> audit_real |> struct(foo: "baz")
       assert c |> nth(2) == a
       assert c.foo == "baz"
       assert (c |> trail |> record).foo == "bar"
