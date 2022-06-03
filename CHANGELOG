@@ -1,1 +1,9 @@
 0.1.0 First version
+0.1.1
+Fixed a bug in Delta.boring?
+Set up Audit.start to start the FileCache Agent
+Added the `mix checks` alias for developers.
+Namespaced FileCache and Delta under Audit.
+0.1.2
+Bug fix: FileCache.start_link needed a parameter.
+Bug fix: file_cache_test.exs shouldn't explicitly start FileCache - it's done automatically 

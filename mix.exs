@@ -31,6 +31,7 @@ defmodule Audit.MixProject do
       {:credo, "~> 1.6", only: [:ci, :dev, :test], runtime: false},
       {:dialyxir, "~> 1.1", only: [:ci, :dev, :test], runtime: false},
       {:ex_doc, ">= 0.0.0", only: :dev, runtime: false},
+      {:excoveralls, "~> 0.14.5", only: [:ci, :test]},
       {:mock, "~> 0.3.7", only: [:ci, :test]}
     ]
   end

@@ -6,8 +6,6 @@ defmodule FileCacheTest do
   @file_contents ["word"]
 
   test "get/1" do
-    {:ok, _pid} = FileCache.start_link()
-
     with_mock File, stream!: fn :filename -> @file_contents end do
       a = FileCache.get(:filename)
       b = FileCache.get(:filename)
