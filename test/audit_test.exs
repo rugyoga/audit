@@ -13,7 +13,6 @@ defmodule AuditTest do
     end
 
     test "nth" do
-
       a = %TestStruct{}
       b = a |> audit_real |> struct(foo: "bar")
       c = b |> audit_real |> struct(foo: "baz")

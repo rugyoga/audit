@@ -13,6 +13,7 @@ defmodule Audit do
     Supervisor.start_link([Audit.FileCache], strategy: :one_for_one)
   end
 
+  @dialyzer {:nowarn_function, audit_fun: 2}
   @spec audit_fun(struct(), Macro.Env) :: struct()
   def audit_fun(r, e) do
     r |> struct([{@key, payload(r, e)}])
