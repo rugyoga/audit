@@ -15,7 +15,7 @@ defmodule Audit do
 
   @spec audit_fun(struct(), Macro.Env) :: struct()
   def audit_fun(r, e) do
-    r |> Map.put(@key, payload(r, e))
+    r |> struct([{@key, payload(r, e)}])
   end
 
   @spec unaudit_fun(struct()) :: struct()

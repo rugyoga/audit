@@ -5,7 +5,7 @@ defmodule Audit.MixProject do
     [
       app: :audit,
       aliases: [checks: ["credo", "format", "dialyzer", "hex.outdated"]],
-      version: "0.1.2",
+      version: "0.1.3",
       elixir: "~> 1.13",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,

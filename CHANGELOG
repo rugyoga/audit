@@ -6,4 +6,6 @@ Added the `mix checks` alias for developers.
 Namespaced FileCache and Delta under Audit.
 0.1.2
 Bug fix: FileCache.start_link needed a parameter.
-Bug fix: file_cache_test.exs shouldn't explicitly start FileCache - it's done automatically 
+Bug fix: file_cache_test.exs shouldn't explicitly start FileCache - it's done automatically
+0.1.3
+Bug fix: change audit_fun to return a struct not Map. 
