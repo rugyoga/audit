@@ -30,6 +30,7 @@ defmodule Audit do
 
   @spec record(trail_t()) :: struct
   def record({r, _, _}), do: r
+  def record(_), do: nil
 
   @spec file(trail_t()) :: file_t()
   def file({_, f, _}), do: f
@@ -37,7 +38,7 @@ defmodule Audit do
   @spec line(trail_t()) :: line_t()
   def line({_, _, l}), do: l
 
-  @spec trail(struct()) :: trail_t()
+  @spec trail(struct()) :: trail_t() | nil
   def trail(struct), do: struct.__audit_trail__
 
   @spec nth(struct(), non_neg_integer()) :: struct()
@@ -46,15 +47,13 @@ defmodule Audit do
 
   @spec stringify_change(change_t()) :: binary()
   defp stringify_change({post, {pre, filename, line}}) do
-    diff = Audit.Delta.delta(pre |> unaudit_fun, post |> unaudit_fun)
-    file = Audit.FileCache.get(filename)
-    start = file |> Enum.drop(line - 6)
-    code = start |> Enum.drop(5) |> List.first()
+    diff = Audit.Delta.delta(unaudit_fun(pre), unaudit_fun(post))
+    code = Audit.FileCache.get(filename) |> Enum.at(line - 1)
     ["#{filename}:#{line}\n", code, "diff: #{inspect(diff)}"] |> Enum.join()
   end
 
   @spec changelist(term) :: [change_t()]
-  defp changelist(r = %_{__audit_trail: audit_trail}) do
+  defp changelist(r = %_{__audit_trail__: audit_trail}) do
     if audit_trail, do: [{r, audit_trail} | changelist(record(audit_trail))], else: []
   end
 
@@ -79,7 +78,6 @@ defmodule Audit do
     end
   end
 
-
   if @audit? do
     defmacro audit(record) do
       quote generated: true do
@@ -88,7 +86,7 @@ defmodule Audit do
     end
   else
     defmacro audit(record) do
-      quote generated: true  do
+      quote generated: true do
         unquote(record)
       end
     end
