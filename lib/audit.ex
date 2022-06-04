@@ -7,7 +7,8 @@ defmodule Audit do
 
   @type file_t :: binary()
   @type line_t :: non_neg_integer()
-  @type trail_t(t) :: {t, file_t(), line_t()}
+  @type trail_t :: {struct(), file_t(), line_t()}
+  @type change_t :: {struct(), trail_t()}
 
   def start(_type, _args) do
     Supervisor.start_link([Audit.FileCache], strategy: :one_for_one)
@@ -19,28 +20,31 @@ defmodule Audit do
     r |> struct([{@key, payload(r, e)}])
   end
 
-  @spec unaudit_fun(struct()) :: struct()
+  @spec unaudit_fun(struct()) :: map()
   def unaudit_fun(r) do
     r |> Map.delete(@key)
   end
 
-  @spec payload(t, Macro.Env) :: trail_t(t) when t: var
+  @spec payload(struct(), Macro.Env) :: trail_t()
   def payload(r, e), do: {r, e.file, e.line}
 
-  @spec record(trail_t(t)) :: t when t: var
+  @spec record(trail_t()) :: struct
   def record({r, _, _}), do: r
 
-  @spec file(trail_t(term)) :: file_t()
+  @spec file(trail_t()) :: file_t()
   def file({_, f, _}), do: f
 
-  @spec line(trail_t(term)) :: line_t()
+  @spec line(trail_t()) :: line_t()
   def line({_, _, l}), do: l
 
-  def trail(struct), do: struct |> Map.get(@key)
+  @spec trail(struct()) :: trail_t()
+  def trail(struct), do: struct.__audit_trail__
 
+  @spec nth(struct(), non_neg_integer()) :: struct()
   def nth(r, 0), do: r
   def nth(r, n), do: nth(r |> trail |> record, n - 1)
 
+  @spec stringify_change(change_t()) :: binary()
   defp stringify_change({post, {pre, filename, line}}) do
     diff = Audit.Delta.delta(pre |> unaudit_fun, post |> unaudit_fun)
     file = Audit.FileCache.get(filename)
@@ -49,11 +53,14 @@ defmodule Audit do
     ["#{filename}:#{line}\n", code, "diff: #{inspect(diff)}"] |> Enum.join()
   end
 
-  defp changelist(r) do
-    audit_trail = trail(r)
+  @spec changelist(term) :: [change_t()]
+  defp changelist(r = %_{__audit_trail: audit_trail}) do
     if audit_trail, do: [{r, audit_trail} | changelist(record(audit_trail))], else: []
   end
 
+  defp changelist(_), do: []
+
+  @spec to_string(struct) :: binary()
   def to_string(r) do
     r
     |> changelist()
