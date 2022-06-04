@@ -79,13 +79,16 @@ defmodule Audit do
     end
   end
 
-  defmacro audit(record) do
-    if @audit? do
+
+  if @audit? do
+    defmacro audit(record) do
       quote generated: true do
         unquote(__MODULE__).audit_fun(unquote(record), __ENV__)
       end
-    else
-      quote do
+    end
+  else
+    defmacro audit(record) do
+      quote generated: true  do
         unquote(record)
       end
     end
