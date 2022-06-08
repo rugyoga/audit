@@ -1,5 +1,5 @@
 # audit
-Elixir library to generate an audit trail of the modifications that have occurred to a data structure
+Elixir library to understand changes in large data structure
 
 https://twitter.com/paulg/status/1532448988766650385
 
