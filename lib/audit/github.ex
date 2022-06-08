@@ -21,7 +21,7 @@ defmodule Audit.Github do
     |> remote()
     |> get_url()
     |> to_https()
-    |> format_string(commit_hash(), filename, line)
+    |> format_string(branch(), filename, line)
   end
 
   @spec format_string(git_t(), git_t(), filename_t(), line_number_t()) :: git_t()
