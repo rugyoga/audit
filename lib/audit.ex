@@ -51,7 +51,11 @@ defmodule Audit do
     code = Audit.FileCache.get(filename) |> Enum.at(line - 1)
     filename = String.replace_prefix(filename, "#{Audit.Github.git_root()}/", "")
     url = Audit.Github.git_url(filename, line)
-    [url, "#{filename}:#{line}", code, "diff: #{inspect(diff)}"] |> Enum.join("\n")
+    ["github url: #{url}",
+     "local path: #{filename}:#{line}",
+     "code: #{String.trim(code)}",
+     "diff: #{inspect(diff)}"]
+     |> Enum.join("\n")
   end
 
   @spec changelist(term) :: [change_t()]
