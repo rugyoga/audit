@@ -8,4 +8,8 @@ Namespaced FileCache and Delta under Audit.
 Bug fix: FileCache.start_link needed a parameter.
 Bug fix: file_cache_test.exs shouldn't explicitly start FileCache - it's done automatically
 0.1.3
-Bug fix: change audit_fun to return a struct not Map. 
+Bug fix: change audit_fun to return a struct not Map.
+0.1.4
+Added Audit.Github module so Audit.Github.git_url could be embedded in Audit.to_string
+0.1.5
+Changed configuration key to enable audit to :audit, :enabled?

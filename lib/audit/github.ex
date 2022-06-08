@@ -3,6 +3,10 @@ defmodule Audit.Github do
   Helper functions for generating Github URLs from filename and line number
   """
 
+  @type line_number_t :: binary | non_neg_integer()
+  @type filename_t :: binary()
+  @type url_t :: binary()
+
   def git(args) do
     case System.cmd("git", args) do
       {s, 0} -> String.trim(s)
@@ -10,7 +14,7 @@ defmodule Audit.Github do
     end
   end
 
-  @spec git_url(binary(), binary() | non_neg_integer()) :: binary() | nil
+  @spec git_url(filename_t(), line_number_t()) :: url_t() | nil
   def git_url(filename, line) do
     branch()
     |> remote()
@@ -19,8 +23,8 @@ defmodule Audit.Github do
     |> format_string(commit_hash(), filename, line)
   end
 
-  @spec format_string(binary() | nil, binary() | nil, binary(), binary() | non_neg_integer()) ::
-          binary() | nil
+  @spec format_string(binary() | nil, binary() | nil, filename_t(), line_number_t()) ::
+          url_t() | nil
   def format_string(nil, _commit_hash, _filename, _line), do: nil
   def format_string(_base, nil, _filename, _line), do: nil
 
@@ -28,7 +32,7 @@ defmodule Audit.Github do
     "#{base}/blob/#{commit_hash}/#{filename}L#{line}"
   end
 
-  @spec branch() :: binary()
+  @spec branch() :: binary() | nil
   def branch() do
     git(~w(rev-parse --abbrev-ref HEAD))
   end

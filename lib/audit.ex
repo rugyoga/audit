@@ -3,7 +3,7 @@ defmodule Audit do
     An implementation of Guy's value chain methodology for debugging complex functional programs
   """
   @key :__audit_trail__
-  @audit? Application.compile_env(:audit, :active, false)
+  @enabled? Application.compile_env(:audit, :enabled?, false)
 
   @type file_t :: binary()
   @type line_t :: non_neg_integer()
@@ -79,7 +79,7 @@ defmodule Audit do
     end
   end
 
-  if @audit? do
+  if @enabled? do
     defmacro audit(record) do
       quote generated: true do
         unquote(__MODULE__).audit_fun(unquote(record), __ENV__)
