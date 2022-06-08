@@ -37,7 +37,7 @@ defmodule Audit.MixProject do
   end
 
   defp description do
-    "The Audit library allows you to easily track changes to key data structutes in your code."
+    "The Audit library allows you to easily track changes to key data structures in your code."
   end
 
   defp package do
