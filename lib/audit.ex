@@ -49,8 +49,9 @@ defmodule Audit do
   defp stringify_change({post, {pre, filename, line}}) do
     diff = Audit.Delta.delta(unaudit_fun(pre), unaudit_fun(post))
     code = Audit.FileCache.get(filename) |> Enum.at(line - 1)
+    filename = String.replace_prefix(filename, Audit.Github.git_root())
     url = Audit.Github.git_url(filename, line)
-    [url, "#{filename}:#{line}\n", code, "diff: #{inspect(diff)}"] |> Enum.join()
+    [url, "#{filename}:#{line}", code, "diff: #{inspect(diff)}"] |> Enum.join("\n")
   end
 
   @spec changelist(term) :: [change_t()]
