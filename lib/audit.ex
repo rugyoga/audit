@@ -15,7 +15,7 @@ defmodule Audit do
   end
 
   @dialyzer {:nowarn_function, audit_fun: 2}
-  @spec audit_fun(struct(), Macro.Env) :: struct()
+  @spec audit_fun(struct(), Macro.Env.t()) :: struct()
   def audit_fun(r, e) do
     r |> struct([{@key, payload(r, e)}])
   end
@@ -58,6 +58,11 @@ defmodule Audit do
      |> Enum.join("\n")
   end
 
+  @spec change(term) :: change_t()
+  defp change(r = %_{__audit_trail__: audit_trail}) do
+    if audit_trail, do: {r, audit_trail}
+  end
+
   @spec changelist(term) :: [change_t()]
   defp changelist(r = %_{__audit_trail__: audit_trail}) do
     if audit_trail, do: [{r, audit_trail} | changelist(record(audit_trail))], else: []
@@ -66,6 +71,9 @@ defmodule Audit do
   defp changelist(_), do: []
 
   @spec to_string(struct) :: binary()
+  def to_string(r, last_only: true) do
+    r |> change() |> stringify_change()
+  end
   def to_string(r) do
     r
     |> changelist()
