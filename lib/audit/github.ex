@@ -29,7 +29,7 @@ defmodule Audit.Github do
   def format_string(_base, nil, _filename, _line), do: nil
 
   def format_string(base, branch, filename, line) do
-    "#{base}/tree/#{branch}#{filename}#L#{line}"
+    [base, "tree", branch, "#{filename}#L#{line}"]
   end
 
   @spec branch() :: git_t()
