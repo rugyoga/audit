@@ -15,5 +15,5 @@ Added Audit.Github module so Audit.Github.git_url could be embedded in Audit.to_
 Changed configuration key to enable audit to :audit, :enabled?
 0.1.6
 Cleaned up filename logic to trim full path to relative using Audit.Github.git_root
-0.1.6
+0.1.7
 Fixed mistake in type signature of audit_fun
